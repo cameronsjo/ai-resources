@@ -136,6 +136,266 @@ echo "git add .; git commit -m 'feat(auth): add user authentication system
 - add password hashing utilities'"
 ```
 
+### Branch Management & Pull Request Workflow
+
+**Branch Creation Strategy:**
+Always create feature branches for development work, following naming conventions:
+
+```bash
+# Feature branches
+git checkout -b feature/user-authentication
+git checkout -b feature/collections-ui
+git checkout -b feature/websocket-integration
+
+# Bug fix branches
+git checkout -b fix/memory-leak-issue
+git checkout -b fix/login-validation
+
+# Hotfix branches (for production issues)
+git checkout -b hotfix/security-patch
+git checkout -b hotfix/critical-bug
+
+# Documentation branches
+git checkout -b docs/api-documentation
+git checkout -b docs/setup-guide
+
+# Refactoring branches
+git checkout -b refactor/database-layer
+git checkout -b refactor/component-architecture
+```
+
+**Branch Naming Conventions:**
+- Use lowercase with hyphens
+- Include type prefix: `feature/`, `fix/`, `hotfix/`, `docs/`, `refactor/`, `chore/`
+- Be descriptive but concise
+- Reference issue numbers when applicable: `feature/123-user-auth`
+
+**Development Workflow:**
+
+```bash
+# 1. Create and switch to feature branch
+git checkout -b feature/new-feature
+
+# 2. Work in small, logical commits
+git add specific-files
+git commit -m "feat(scope): implement core functionality"
+
+# 3. Keep branch updated with main/master
+git fetch origin
+git rebase origin/main  # or git merge origin/main
+
+# 4. Push branch and create draft PR early
+git push -u origin feature/new-feature
+# Then create draft PR in GitHub/GitLab
+```
+
+**Draft Pull Request Best Practices:**
+
+**When to Create Draft PRs:**
+- As soon as you push your first commit to a feature branch
+- For work-in-progress features that need early feedback
+- When implementing complex features that benefit from ongoing review
+- For collaborative features where multiple developers contribute
+
+**Draft PR Benefits:**
+- Early visibility into development progress
+- Continuous integration feedback on every push
+- Opportunity for early design feedback
+- Documentation of development decisions and approach
+- Easier collaboration and code sharing
+
+**Draft PR Creation:**
+```bash
+# After pushing your feature branch
+echo "Create draft PR with:"
+echo "Title: [DRAFT] feat(scope): Brief description of feature"
+echo "Body: Include checklist, implementation notes, and questions"
+echo "Convert to ready for review when feature is complete"
+```
+
+**Draft PR Template:**
+```markdown
+## 🚧 Work in Progress
+
+### Overview
+Brief description of what this PR implements.
+
+### Progress Checklist
+- [ ] Core functionality implemented
+- [ ] Unit tests added
+- [ ] Integration tests passing
+- [ ] Documentation updated
+- [ ] Error handling implemented
+- [ ] Performance considerations addressed
+- [ ] Security review completed
+- [ ] Ready for review
+
+### Implementation Notes
+- Key architectural decisions
+- Challenges encountered and solutions
+- Dependencies or breaking changes
+- Performance impact
+
+### Questions for Reviewers
+- Specific areas needing feedback
+- Alternative approaches to consider
+- Integration concerns
+
+### Testing
+- [ ] Manual testing completed
+- [ ] Edge cases covered
+- [ ] Cross-browser testing (if applicable)
+- [ ] Performance testing completed
+
+### Related Issues
+Closes #123
+Related to #456
+```
+
+**Ready for Review Transition:**
+```bash
+# Before converting draft to ready for review:
+echo "Pre-review checklist:"
+echo "1. All tests passing"
+echo "2. Code self-reviewed"
+echo "3. Documentation updated"
+echo "4. Commits properly organized"
+echo "5. Branch rebased on latest main"
+echo "6. All checklist items completed"
+
+# Convert draft to ready
+echo "✓ Convert draft PR to 'Ready for Review'"
+echo "✓ Add specific reviewers"
+echo "✓ Update title to remove [DRAFT] prefix"
+```
+
+**Git Best Practices:**
+
+**Commit Hygiene:**
+```bash
+# Amend last commit for small fixes
+git add fix-file.js
+git commit --amend --no-edit
+
+# Interactive rebase for commit cleanup
+git rebase -i HEAD~3  # Clean up last 3 commits
+
+# Squash related commits before PR merge
+git rebase -i HEAD~5  # Squash feature commits
+```
+
+**Branch Cleanup:**
+```bash
+# After PR is merged, clean up local and remote branches
+git checkout main
+git pull origin main
+git branch -d feature/completed-feature  # Delete local branch
+git push origin --delete feature/completed-feature  # Delete remote branch
+
+# Clean up tracking references
+git fetch --prune
+```
+
+**Conflict Resolution:**
+```bash
+# When rebasing encounters conflicts
+git status  # See conflicted files
+# Edit files to resolve conflicts
+git add resolved-file.js
+git rebase --continue
+
+# If rebase gets complex, abort and merge instead
+git rebase --abort
+git merge origin/main
+```
+
+**Multi-Developer Collaboration:**
+```bash
+# Working on shared feature branch
+git fetch origin
+git rebase origin/feature/shared-feature  # Stay updated
+git push --force-with-lease origin feature/shared-feature  # Safe force push
+
+# Collaborating without conflicts
+git pull --rebase origin feature/shared-feature
+# Make changes
+git push origin feature/shared-feature
+```
+
+**Release Workflow:**
+```bash
+# Preparing for release
+git checkout -b release/v1.2.0
+# Update version numbers, changelog
+git commit -m "chore(release): prepare v1.2.0"
+git push origin release/v1.2.0
+# Create PR to main, then tag after merge
+
+# Creating release tags
+git checkout main
+git pull origin main
+git tag -a v1.2.0 -m "Release version 1.2.0"
+git push origin v1.2.0
+```
+
+**Emergency Hotfix Workflow:**
+```bash
+# For critical production issues
+git checkout main
+git pull origin main
+git checkout -b hotfix/critical-security-fix
+
+# Make minimal necessary changes
+git commit -m "fix: resolve critical security vulnerability"
+git push origin hotfix/critical-security-fix
+
+# Create emergency PR with expedited review
+# After merge, immediately deploy and create patch release
+```
+
+**Git Configuration Best Practices:**
+```bash
+# Set up useful git aliases
+git config --global alias.st status
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.unstage 'reset HEAD --'
+git config --global alias.last 'log -1 HEAD'
+git config --global alias.visual '!gitk'
+
+# Set up proper line endings for cross-platform work
+git config --global core.autocrlf input  # Linux/Mac
+git config --global core.autocrlf true   # Windows
+
+# Set up GPG signing for commits (security best practice)
+git config --global commit.gpgsign true
+git config --global user.signingkey YOUR_GPG_KEY_ID
+```
+
+**Automated Git Workflows:**
+```bash
+# Script for starting new features
+function new-feature() {
+    local feature_name="$1"
+    git checkout main
+    git pull origin main
+    git checkout -b "feature/$feature_name"
+    echo "✓ Created feature branch: feature/$feature_name"
+    echo "Next: Make changes, commit, and push to create draft PR"
+}
+
+# Script for finishing features
+function finish-feature() {
+    local current_branch=$(git branch --show-current)
+    git fetch origin
+    git rebase origin/main
+    git push origin "$current_branch"
+    echo "✓ Feature branch updated and pushed"
+    echo "Next: Create/update PR and request review"
+}
+```
+
 ## Code Quality Standards
 
 ### Commenting Guidelines
@@ -402,6 +662,1367 @@ fi
 - **ALWAYS** create backups before production changes
 - **NEVER** run experimental scripts against production
 - **ALWAYS** test on development database first
+
+## Containerization & Environment Management
+
+### Environment Variables & Configuration
+
+**Environment Variable Priority:**
+Always favor environment variables over hardcoded configuration:
+
+```javascript
+// * Configuration: Environment variables take precedence over defaults
+const config = {
+    port: process.env.PORT || 3000,
+    dbUrl: process.env.DATABASE_URL || 'sqlite://./dev.db',
+    apiKey: process.env.API_KEY, // Required, no default
+    logLevel: process.env.LOG_LEVEL || 'info',
+    maxRetries: parseInt(process.env.MAX_RETRIES) || 3
+};
+
+// * Validation: Ensure required environment variables are set
+const requiredEnvVars = ['API_KEY', 'DATABASE_URL'];
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+if (missingVars.length > 0) {
+    console.error(`Missing required environment variables: ${missingVars.join(', ')}`);
+    process.exit(1);
+}
+```
+
+**Environment File Loading:**
+Ensure applications load `.env` files properly:
+
+```javascript
+// * Environment: Load .env file early in application startup
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load environment-specific .env files
+const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
+dotenv.config({ path: path.resolve(process.cwd(), envFile) });
+
+// Fallback to default .env if environment-specific file doesn't exist
+if (process.env.NODE_ENV && !require('fs').existsSync(envFile)) {
+    dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+}
+```
+
+```python
+# * Environment: Python environment loading with validation
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+def load_environment():
+    """Load environment variables with proper fallback and validation."""
+    # Load environment-specific .env file
+    env_name = os.getenv('ENVIRONMENT', 'development')
+    env_file = Path(f'.env.{env_name}')
+
+    if env_file.exists():
+        load_dotenv(env_file)
+    else:
+        # Fallback to default .env
+        load_dotenv('.env')
+
+    # Validate required variables
+    required_vars = ['DATABASE_URL', 'SECRET_KEY']
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
+
+    if missing_vars:
+        raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}")
+
+# Call early in application startup
+load_environment()
+```
+
+### Feature Flags & Configuration Management
+
+**Feature Flag Implementation:**
+
+```javascript
+// * Feature Flags: Environment-driven feature toggles
+class FeatureFlags {
+    static isEnabled(featureName) {
+        const envVar = `FEATURE_${featureName.toUpperCase()}`;
+        const value = process.env[envVar];
+
+        // Support various boolean representations
+        return ['true', '1', 'yes', 'on'].includes(value?.toLowerCase());
+    }
+
+    static getConfig(featureName, defaultValue = null) {
+        const envVar = `FEATURE_${featureName.toUpperCase()}_CONFIG`;
+        const value = process.env[envVar];
+
+        if (!value) return defaultValue;
+
+        try {
+            return JSON.parse(value);
+        } catch (e) {
+            return value; // Return as string if not valid JSON
+        }
+    }
+}
+
+// * Usage: Feature flag checks throughout application
+if (FeatureFlags.isEnabled('advanced_search')) {
+    // Enable advanced search functionality
+}
+
+const retryConfig = FeatureFlags.getConfig('retry_logic', { maxAttempts: 3, backoff: 1000 });
+```
+
+**Environment-Specific Configuration:**
+
+```bash
+# .env.development
+NODE_ENV=development
+LOG_LEVEL=debug
+FEATURE_ADVANCED_SEARCH=true
+FEATURE_ANALYTICS=false
+DATABASE_URL=sqlite://./dev.db
+
+# .env.production
+NODE_ENV=production
+LOG_LEVEL=info
+FEATURE_ADVANCED_SEARCH=true
+FEATURE_ANALYTICS=true
+DATABASE_URL=${DATABASE_URL}  # Injected by container orchestration
+```
+
+### Secrets Management
+
+**Secrets from Environment Paths:**
+
+```javascript
+// * Secrets: Load secrets from filesystem paths provided via environment variables
+import fs from 'fs/promises';
+import path from 'path';
+
+class SecretsManager {
+    static async loadSecret(secretName) {
+        const secretPathEnv = `${secretName.toUpperCase()}_SECRET_PATH`;
+        const secretPath = process.env[secretPathEnv];
+
+        if (!secretPath) {
+            throw new Error(`Secret path environment variable ${secretPathEnv} not set`);
+        }
+
+        try {
+            const secretValue = await fs.readFile(secretPath, 'utf8');
+            return secretValue.trim();
+        } catch (error) {
+            throw new Error(`Failed to load secret from ${secretPath}: ${error.message}`);
+        }
+    }
+
+    static async loadAllSecrets() {
+        const secrets = {};
+        const secretEnvVars = Object.keys(process.env)
+            .filter(key => key.endsWith('_SECRET_PATH'));
+
+        for (const envVar of secretEnvVars) {
+            const secretName = envVar.replace('_SECRET_PATH', '').toLowerCase();
+            try {
+                secrets[secretName] = await this.loadSecret(secretName);
+            } catch (error) {
+                console.error(`Warning: Could not load secret ${secretName}: ${error.message}`);
+            }
+        }
+
+        return secrets;
+    }
+}
+
+// * Usage: Load secrets during application startup
+const secrets = await SecretsManager.loadAllSecrets();
+```
+
+**Docker Secrets Integration:**
+
+```bash
+# Environment variables pointing to Docker secrets
+DATABASE_PASSWORD_SECRET_PATH=/run/secrets/db_password
+API_KEY_SECRET_PATH=/run/secrets/api_key
+JWT_SECRET_SECRET_PATH=/run/secrets/jwt_secret
+```
+
+### Container Runtime Detection
+
+**Container Engine Detection:**
+
+```javascript
+// * Container: Detect available container runtime (Podman > Rancher > Docker)
+import { execSync } from 'child_process';
+
+class ContainerRuntime {
+    static async detectRuntime() {
+        const runtimes = ['podman', 'rancher', 'docker'];
+
+        for (const runtime of runtimes) {
+            if (await this.isRuntimeAvailable(runtime)) {
+                return runtime;
+            }
+        }
+
+        throw new Error('No container runtime detected (podman, rancher, or docker)');
+    }
+
+    static async isRuntimeAvailable(runtime) {
+        try {
+            execSync(`${runtime} --version`, { stdio: 'pipe' });
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    static async getContainerInfo() {
+        const runtime = await this.detectRuntime();
+
+        try {
+            const version = execSync(`${runtime} --version`, { encoding: 'utf8' });
+            const info = execSync(`${runtime} info --format json`, { encoding: 'utf8' });
+
+            return {
+                runtime,
+                version: version.trim(),
+                info: JSON.parse(info)
+            };
+        } catch (error) {
+            return {
+                runtime,
+                version: 'unknown',
+                error: error.message
+            };
+        }
+    }
+}
+```
+
+```bash
+# * Container: Shell script for container runtime detection
+detect_container_runtime() {
+    local runtimes=("podman" "rancher" "docker")
+
+    for runtime in "${runtimes[@]}"; do
+        if command -v "$runtime" >/dev/null 2>&1; then
+            echo "Detected container runtime: $runtime"
+            return 0
+        fi
+    done
+
+    echo "Error: No container runtime found. Please install podman, rancher, or docker."
+    exit 1
+}
+
+# Usage in scripts
+CONTAINER_RUNTIME=$(detect_container_runtime)
+```
+
+```powershell
+# * Container: PowerShell container runtime detection
+function Get-ContainerRuntime {
+    $runtimes = @('podman', 'rancher', 'docker')
+
+    foreach ($runtime in $runtimes) {
+        try {
+            $null = & $runtime --version 2>$null
+            if ($LASTEXITCODE -eq 0) {
+                Write-Host "Detected container runtime: $runtime" -ForegroundColor Green
+                return $runtime
+            }
+        }
+        catch {
+            continue
+        }
+    }
+
+    throw "No container runtime found. Please install podman, rancher, or docker."
+}
+
+# Usage
+$containerRuntime = Get-ContainerRuntime
+```
+
+### Docker & Container Best Practices
+
+**Dockerfile Best Practices:**
+
+```dockerfile
+# * Container: Multi-stage build for optimized production images
+FROM node:18-alpine AS builder
+
+# Install dependencies only
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Build application
+COPY . .
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine AS production
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nextjs -u 1001
+
+# Set working directory
+WORKDIR /app
+
+# Copy built application from builder stage
+COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
+
+# Environment variables with defaults
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:$PORT/health || exit 1
+
+# Switch to non-root user
+USER nextjs
+
+# Expose port
+EXPOSE $PORT
+
+# Start command
+CMD ["node", "dist/index.js"]
+```
+
+**Docker Compose Configuration:**
+
+```yaml
+# * Container: Docker Compose with environment-driven configuration
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - DATABASE_URL=${DATABASE_URL}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - FEATURE_ANALYTICS=${FEATURE_ANALYTICS:-false}
+    env_file:
+      - .env
+      - .env.${NODE_ENV:-production}
+    secrets:
+      - db_password
+      - api_key
+    volumes:
+      - ./logs:/app/logs
+      - uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-app_db}
+      POSTGRES_USER: ${POSTGRES_USER:-app_user}
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app_user} -d ${POSTGRES_DB:-app_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+secrets:
+  db_password:
+    file: ./secrets/db_password.txt
+  api_key:
+    file: ./secrets/api_key.txt
+
+volumes:
+  postgres_data:
+  uploads:
+```
+
+**Container Development Workflow:**
+
+```bash
+# * Container: Development workflow with container runtime detection
+#!/bin/bash
+
+# Detect container runtime
+if command -v podman >/dev/null 2>&1; then
+    CONTAINER_RUNTIME="podman"
+elif command -v rancher >/dev/null 2>&1; then
+    CONTAINER_RUNTIME="rancher"
+elif command -v docker >/dev/null 2>&1; then
+    CONTAINER_RUNTIME="docker"
+else
+    echo "Error: No container runtime found"
+    exit 1
+fi
+
+echo "Using container runtime: $CONTAINER_RUNTIME"
+
+# Build development image
+build_dev() {
+    $CONTAINER_RUNTIME build -t app:dev -f Dockerfile.dev .
+}
+
+# Run development container with live reload
+run_dev() {
+    $CONTAINER_RUNTIME run -it --rm \
+        -p 3000:3000 \
+        -v $(pwd):/app \
+        -v /app/node_modules \
+        --env-file .env.development \
+        app:dev
+}
+
+# Build production image
+build_prod() {
+    $CONTAINER_RUNTIME build -t app:prod .
+}
+
+# Run production container
+run_prod() {
+    $CONTAINER_RUNTIME run -d \
+        --name app-prod \
+        -p 3000:3000 \
+        --env-file .env.production \
+        --restart unless-stopped \
+        app:prod
+}
+
+# Container health checks
+health_check() {
+    $CONTAINER_RUNTIME exec app-prod curl -f http://localhost:3000/health
+}
+
+# Container logs
+logs() {
+    $CONTAINER_RUNTIME logs -f app-prod
+}
+
+# Cleanup
+cleanup() {
+    $CONTAINER_RUNTIME stop app-prod 2>/dev/null || true
+    $CONTAINER_RUNTIME rm app-prod 2>/dev/null || true
+    $CONTAINER_RUNTIME rmi app:dev app:prod 2>/dev/null || true
+}
+
+case "$1" in
+    "build-dev") build_dev ;;
+    "run-dev") run_dev ;;
+    "build-prod") build_prod ;;
+    "run-prod") run_prod ;;
+    "health") health_check ;;
+    "logs") logs ;;
+    "cleanup") cleanup ;;
+    *) echo "Usage: $0 {build-dev|run-dev|build-prod|run-prod|health|logs|cleanup}" ;;
+esac
+```
+
+**Container Security Best Practices:**
+
+```dockerfile
+# * Security: Container security hardening
+FROM node:18-alpine
+
+# Update packages and remove cache
+RUN apk update && apk upgrade && \
+    apk add --no-cache dumb-init && \
+    rm -rf /var/cache/apk/*
+
+# Create non-root user with specific UID/GID
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -S appuser -u 1001 -G appgroup
+
+# Set secure file permissions
+COPY --chown=appuser:appgroup . /app
+WORKDIR /app
+
+# Install dependencies as root, then switch to non-root
+RUN npm ci --only=production && \
+    npm cache clean --force
+
+# Switch to non-root user
+USER appuser
+
+# Use dumb-init for proper signal handling
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", "index.js"]
+```
+
+**Production Container Monitoring:**
+
+```javascript
+// * Monitoring: Container-aware health checks and metrics
+class ContainerHealth {
+    static async getHealthStatus() {
+        const health = {
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            uptime: process.uptime(),
+            memory: process.memoryUsage(),
+            version: process.env.npm_package_version || 'unknown'
+        };
+
+        // Check database connectivity
+        try {
+            await this.checkDatabase();
+            health.database = 'connected';
+        } catch (error) {
+            health.status = 'unhealthy';
+            health.database = 'disconnected';
+            health.error = error.message;
+        }
+
+        // Check external services
+        health.externalServices = await this.checkExternalServices();
+
+        return health;
+    }
+
+    static async checkDatabase() {
+        // Implement database connectivity check
+    }
+
+    static async checkExternalServices() {
+        // Implement external service health checks
+        return {};
+    }
+}
+
+// Health endpoint for container orchestration
+app.get('/health', async (req, res) => {
+    try {
+        const health = await ContainerHealth.getHealthStatus();
+        const statusCode = health.status === 'healthy' ? 200 : 503;
+        res.status(statusCode).json(health);
+    } catch (error) {
+        res.status(503).json({
+            status: 'unhealthy',
+            error: error.message,
+            timestamp: new Date().toISOString()
+        });
+    }
+});
+
+// Graceful shutdown handling
+process.on('SIGTERM', async () => {
+    console.log('Received SIGTERM, starting graceful shutdown');
+
+    // Close server
+    server.close(() => {
+        console.log('HTTP server closed');
+
+        // Close database connections
+        // Close other resources
+
+        process.exit(0);
+    });
+
+    // Force exit after 10 seconds
+    setTimeout(() => {
+        console.error('Forced shutdown after timeout');
+        process.exit(1);
+    }, 10000);
+});
+```
+
+## Code Quality & Analysis Tools
+
+### Essential Development Tools Setup
+
+**Always ensure these tools are properly configured for any project:**
+
+```bash
+# Essential code quality tools to install and configure
+npm install --save-dev \
+    eslint @eslint/js \
+    prettier \
+    husky lint-staged \
+    @typescript-eslint/parser @typescript-eslint/eslint-plugin \
+    eslint-plugin-security \
+    eslint-plugin-import \
+    eslint-plugin-node \
+    eslint-plugin-promise
+```
+
+```python
+# Python code quality tools (add to requirements-dev.txt)
+black>=23.0.0           # Code formatting
+isort>=5.12.0          # Import sorting
+pylint>=2.17.0         # Linting and static analysis
+mypy>=1.5.0            # Type checking
+bandit>=1.7.5          # Security vulnerability scanning
+safety>=2.3.0          # Dependency vulnerability scanning
+pre-commit>=3.3.0      # Git hooks management
+ruff>=0.0.280          # Fast Python linter (alternative to pylint)
+```
+
+### Linting & Static Analysis
+
+**ESLint Configuration (.eslintrc.js):**
+
+```javascript
+// * Linting: Comprehensive ESLint configuration for modern projects
+module.exports = {
+    env: {
+        browser: true,
+        es2022: true,
+        node: true,
+    },
+    extends: [
+        'eslint:recommended',
+        '@typescript-eslint/recommended',
+        'plugin:security/recommended',
+        'plugin:import/recommended',
+        'plugin:import/typescript',
+    ],
+    parser: '@typescript-eslint/parser',
+    parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        project: './tsconfig.json',
+    },
+    plugins: [
+        '@typescript-eslint',
+        'security',
+        'import',
+    ],
+    rules: {
+        // Code Quality
+        'no-console': 'warn',
+        'no-debugger': 'error',
+        'no-unused-vars': 'off', // Handled by TypeScript
+        '@typescript-eslint/no-unused-vars': 'error',
+
+        // Security
+        'security/detect-object-injection': 'error',
+        'security/detect-non-literal-regexp': 'error',
+        'security/detect-unsafe-regex': 'error',
+
+        // Import Organization
+        'import/order': ['error', {
+            'groups': [
+                'builtin',
+                'external',
+                'internal',
+                'parent',
+                'sibling',
+                'index'
+            ],
+            'newlines-between': 'always',
+        }],
+
+        // TypeScript Specific
+        '@typescript-eslint/explicit-function-return-type': 'warn',
+        '@typescript-eslint/no-explicit-any': 'error',
+        '@typescript-eslint/prefer-const': 'error',
+
+        // Best Practices
+        'prefer-const': 'error',
+        'no-var': 'error',
+        'object-shorthand': 'error',
+        'prefer-template': 'error',
+    },
+    ignorePatterns: [
+        'dist/',
+        'build/',
+        'node_modules/',
+        '*.min.js',
+    ],
+};
+```
+
+**Python Linting (pyproject.toml):**
+
+```toml
+# * Linting: Python code quality configuration
+[tool.pylint.main]
+load-plugins = ["pylint.extensions.docparams"]
+extension-pkg-whitelist = ["pydantic"]
+
+[tool.pylint.messages_control]
+disable = [
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-instance-attributes",
+    "missing-module-docstring",
+]
+
+[tool.pylint.format]
+max-line-length = 88  # Black's default
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.bandit]
+exclude_dirs = ["tests", "test_*"]
+skips = ["B101"]  # Skip assert_used test
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "S",   # bandit (security)
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+]
+
+[tool.ruff.per-file-ignores]
+"tests/*" = ["S101"]  # Allow assert in tests
+```
+
+### Code Formatting & Prettification
+
+**Prettier Configuration (.prettierrc):**
+
+```json
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false,
+  "bracketSpacing": true,
+  "bracketSameLine": false,
+  "arrowParens": "avoid",
+  "endOfLine": "lf",
+  "overrides": [
+    {
+      "files": "*.md",
+      "options": {
+        "printWidth": 100,
+        "proseWrap": "always"
+      }
+    },
+    {
+      "files": "*.json",
+      "options": {
+        "printWidth": 120
+      }
+    }
+  ]
+}
+```
+
+**Black Configuration (pyproject.toml):**
+
+```toml
+[tool.black]
+line-length = 88
+target-version = ['py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.mypy_cache
+  | \.pytest_cache
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["your_project"]
+skip_gitignore = true
+```
+
+### Type Checking
+
+**TypeScript Configuration (tsconfig.json):**
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "allowJs": false,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "removeComments": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ]
+}
+```
+
+### Security Scanning & Vulnerability Detection
+
+**Security Scanning Tools:**
+
+```bash
+# * Security: Install security scanning tools
+npm install --save-dev \
+    eslint-plugin-security \
+    npm-audit-resolver \
+    audit-ci
+
+# For Python projects
+pip install safety bandit semgrep
+```
+
+**Security Configuration (.github/workflows/security.yml):**
+
+```yaml
+# * Security: Automated security scanning workflow
+name: Security Scanning
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint Security
+        run: npx eslint . --ext .js,.ts,.tsx --format=compact
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+
+      - name: Run Security Audit
+        run: npx audit-ci --moderate
+
+      # Python security scanning
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Python security tools
+        run: |
+          pip install safety bandit
+
+      - name: Run Bandit security scan
+        run: bandit -r . -f json -o bandit-report.json || true
+
+      - name: Run Safety check
+        run: safety check --json --output safety-report.json || true
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-reports
+          path: |
+            bandit-report.json
+            safety-report.json
+```
+
+**Bandit Configuration (.bandit):**
+
+```yaml
+# * Security: Bandit configuration for Python security scanning
+exclude_dirs:
+  - tests
+  - test_*
+  - .venv
+  - venv
+  - env
+
+tests:
+  - B101  # Skip assert_used in production code
+  - B201  # Flask debug mode
+  - B501  # SSL verification
+  - B601  # Parameterized shell injection
+
+skips:
+  - B101  # Allow assert in test files
+```
+
+### Pre-commit Hooks & Git Integration
+
+**Pre-commit Configuration (.pre-commit-config.yaml):**
+
+```yaml
+# * Pre-commit: Automated code quality checks before commits
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-xml
+      - id: check-merge-conflict
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: debug-statements
+      - id: requirements-txt-fixer
+
+  # JavaScript/TypeScript
+  - repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.44.0
+    hooks:
+      - id: eslint
+        files: \.(js|ts|tsx)$
+        types: [file]
+        additional_dependencies:
+          - eslint@8.44.0
+          - '@typescript-eslint/parser@6.0.0'
+          - '@typescript-eslint/eslint-plugin@6.0.0'
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.0.0
+    hooks:
+      - id: prettier
+        files: \.(js|ts|tsx|json|md|yml|yaml)$
+
+  # Python
+  - repo: https://github.com/psf/black
+    rev: 23.7.0
+    hooks:
+      - id: black
+        language_version: python3.11
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+
+  - repo: https://github.com/pycqa/pylint
+    rev: v2.17.4
+    hooks:
+      - id: pylint
+        args: ["--rcfile=pyproject.toml"]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.5.1
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-all]
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: ["-c", ".bandit"]
+
+  # Security
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.4.0
+    hooks:
+      - id: detect-secrets
+        args: ['--baseline', '.secrets.baseline']
+
+  # Git commit message validation
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.6.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
+
+default_language_version:
+  python: python3.11
+  node: '18.17.0'
+```
+
+**Husky + Lint-staged Configuration (package.json):**
+
+```json
+{
+  "scripts": {
+    "prepare": "husky install",
+    "lint": "eslint . --ext .js,.ts,.tsx --fix",
+    "lint:check": "eslint . --ext .js,.ts,.tsx",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit",
+    "security:audit": "npm audit --audit-level=moderate",
+    "security:scan": "eslint . --ext .js,.ts,.tsx --format=compact --config .eslintrc-security.js",
+    "quality:check": "npm run lint:check && npm run format:check && npm run type-check && npm run security:audit"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ],
+    "*.py": [
+      "black",
+      "isort --profile black",
+      "pylint",
+      "mypy"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm run type-check",
+      "commit-msg": "commitizen --hook || true",
+      "pre-push": "npm run quality:check"
+    }
+  }
+}
+```
+
+### IDE Integration & Development Experience
+
+**VS Code Settings (.vscode/settings.json):**
+
+```json
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "python.defaultInterpreterPath": "./.venv/bin/python",
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "python.linting.mypyEnabled": true,
+  "python.linting.banditEnabled": true,
+  "python.formatting.provider": "black",
+  "python.sortImports.args": ["--profile", "black"],
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "files.associations": {
+    ".eslintrc": "json",
+    ".prettierrc": "json"
+  }
+}
+```
+
+**VS Code Extensions (.vscode/extensions.json):**
+
+```json
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "ms-python.python",
+    "ms-python.black-formatter",
+    "ms-python.isort",
+    "ms-python.pylint",
+    "ms-python.mypy-type-checker",
+    "charliermarsh.ruff",
+    "bradlc.vscode-tailwindcss",
+    "christian-kohler.path-intellisense",
+    "formulahendry.auto-rename-tag",
+    "aaron-bond.better-comments",
+    "streetsidesoftware.code-spell-checker",
+    "ms-vscode.vscode-typescript-next",
+    "ms-vsliveshare.vsliveshare"
+  ]
+}
+```
+
+### Automated Quality Gates
+
+**GitHub Actions Quality Pipeline (.github/workflows/quality.yml):**
+
+```yaml
+# * Quality: Comprehensive code quality pipeline
+name: Code Quality
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          pip install -r requirements-dev.txt
+
+      # JavaScript/TypeScript Quality Checks
+      - name: ESLint Check
+        run: npm run lint:check
+
+      - name: Prettier Check
+        run: npm run format:check
+
+      - name: TypeScript Check
+        run: npm run type-check
+
+      - name: Security Audit
+        run: npm run security:audit
+
+      # Python Quality Checks
+      - name: Black Check
+        run: black --check .
+
+      - name: isort Check
+        run: isort --check-only --profile black .
+
+      - name: Pylint Check
+        run: pylint --rcfile=pyproject.toml src/
+
+      - name: MyPy Check
+        run: mypy src/
+
+      - name: Bandit Security Check
+        run: bandit -r src/ -f json
+
+      - name: Safety Check
+        run: safety check
+
+      # Generate quality reports
+      - name: Generate ESLint Report
+        run: npx eslint . --ext .js,.ts,.tsx --format=json --output-file=eslint-report.json || true
+
+      - name: Generate Coverage Report
+        run: npm run test:coverage || true
+
+      - name: Upload Quality Reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: quality-reports
+          path: |
+            eslint-report.json
+            coverage/
+            bandit-report.json
+            safety-report.json
+```
+
+### Quality Metrics & Monitoring
+
+**SonarQube Configuration (sonar-project.properties):**
+
+```properties
+# * Quality: SonarQube configuration for continuous code quality
+sonar.projectKey=your-project-key
+sonar.projectName=Your Project Name
+sonar.projectVersion=1.0
+
+# Source and test directories
+sonar.sources=src/
+sonar.tests=tests/,src/**/*.test.ts,src/**/*.spec.ts
+sonar.exclusions=**/*.min.js,**/node_modules/**,**/dist/**,**/build/**
+
+# Language-specific settings
+sonar.typescript.lcov.reportPaths=coverage/lcov.info
+sonar.python.coverage.reportPaths=coverage.xml
+sonar.python.xunit.reportPath=test-results.xml
+
+# Quality gates
+sonar.qualitygate.wait=true
+sonar.coverage.exclusions=**/*.test.ts,**/*.spec.ts,**/test_*.py
+```
+
+### Development Automation Scripts
+
+**Quality Check Scripts:**
+
+```bash
+#!/bin/bash
+# * Quality: Comprehensive quality check script
+
+set -e
+
+echo "🔍 Running comprehensive quality checks..."
+
+# JavaScript/TypeScript checks
+if [ -f "package.json" ]; then
+    echo "📋 Checking JavaScript/TypeScript..."
+    npm run lint:check
+    npm run format:check
+    npm run type-check
+    npm run security:audit
+    echo "✅ JavaScript/TypeScript checks passed"
+fi
+
+# Python checks
+if [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then
+    echo "🐍 Checking Python..."
+    black --check .
+    isort --check-only --profile black .
+    pylint --rcfile=pyproject.toml src/
+    mypy src/
+    bandit -r src/
+    safety check
+    echo "✅ Python checks passed"
+fi
+
+# Git hooks validation
+if [ -d ".git" ]; then
+    echo "🪝 Validating Git hooks..."
+    if command -v pre-commit &> /dev/null; then
+        pre-commit run --all-files
+    fi
+    echo "✅ Git hooks validation passed"
+fi
+
+echo "🎉 All quality checks passed!"
+```
+
+```powershell
+# * Quality: PowerShell quality check script for Windows
+param(
+    [switch]$Fix,
+    [switch]$SkipTests
+)
+
+Write-Host "🔍 Running comprehensive quality checks..." -ForegroundColor Cyan
+
+# JavaScript/TypeScript checks
+if (Test-Path "package.json") {
+    Write-Host "📋 Checking JavaScript/TypeScript..." -ForegroundColor Yellow
+
+    if ($Fix) {
+        npm run lint
+        npm run format
+    } else {
+        npm run lint:check
+        npm run format:check
+    }
+
+    npm run type-check
+    npm run security:audit
+    Write-Host "✅ JavaScript/TypeScript checks passed" -ForegroundColor Green
+}
+
+# Python checks
+if ((Test-Path "requirements.txt") -or (Test-Path "pyproject.toml")) {
+    Write-Host "🐍 Checking Python..." -ForegroundColor Yellow
+
+    if ($Fix) {
+        black .
+        isort --profile black .
+    } else {
+        black --check .
+        isort --check-only --profile black .
+    }
+
+    pylint --rcfile=pyproject.toml src/
+    mypy src/
+    bandit -r src/
+    safety check
+    Write-Host "✅ Python checks passed" -ForegroundColor Green
+}
+
+Write-Host "🎉 All quality checks passed!" -ForegroundColor Green
+```
 
 ## Adaptive Learning & Evolution
 
