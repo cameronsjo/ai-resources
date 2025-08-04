@@ -828,6 +828,7 @@ CMD ["npm", "start"]
 
 ```yaml
 # * Container: Docker Compose development environment
+# * Environment: Uses variables from .env file (see Environment Configuration section above)
 version: '3.8'
 
 services:
@@ -898,11 +899,14 @@ networks:
 
 ### Environment Configuration
 
-**Environment Variables Template:**
+All environment variable handling should be consolidated in this section. Reference this single source of truth for all environment-related configurations.
+
+**Environment Variables Template (.env.example):**
 
 ```bash
 # .env.example - Copy to .env and fill in your values
 # ! Never commit real values to version control
+# ! Update this single template when adding new environment variables
 
 # Application
 NODE_ENV=development
@@ -953,16 +957,30 @@ FEATURE_NEW_UI=false
 FEATURE_ADVANCED_SEARCH=true
 ```
 
-**Environment Loading Script:**
+**Required Environment Variables:**
+Maintain this list when adding new required variables:
+
+```bash
+# Required variables (no defaults allowed)
+REQUIRED_ENV_VARS=(
+    "DATABASE_URL"
+    "JWT_SECRET" 
+    "API_KEY"
+)
+```
+
+**Environment Loading (All Languages):**
 
 ```bash
 #!/bin/bash
-# * Environment: Load environment-specific configuration
+# * Environment: Universal environment loader script
+# Reference the REQUIRED_ENV_VARS list above when updating
 
 load_environment() {
     local env_name=${1:-development}
     local env_file=".env.${env_name}"
 
+    # Load environment-specific file first, fallback to .env
     if [[ -f "$env_file" ]]; then
         echo "Loading environment: $env_file"
         export $(grep -v '^#' "$env_file" | xargs)
@@ -973,9 +991,9 @@ load_environment() {
         echo "Warning: No environment file found"
     fi
 
-    # Validate required environment variables
-    required_vars=("DATABASE_URL" "JWT_SECRET")
-    missing_vars=()
+    # Validate required environment variables (reference list above)
+    local required_vars=("DATABASE_URL" "JWT_SECRET" "API_KEY")
+    local missing_vars=()
 
     for var in "${required_vars[@]}"; do
         if [[ -z "${!var}" ]]; then
@@ -985,6 +1003,7 @@ load_environment() {
 
     if [[ ${#missing_vars[@]} -gt 0 ]]; then
         echo "Error: Missing required environment variables: ${missing_vars[*]}"
+        echo "Please check your .env file against .env.example"
         exit 1
     fi
 
@@ -993,6 +1012,76 @@ load_environment() {
 
 # Usage: source ./load-env.sh [environment]
 load_environment "$1"
+```
+
+```javascript
+// * Environment: Node.js/JavaScript loading
+import dotenv from 'dotenv';
+import path from 'path';
+
+function loadEnvironment() {
+    // Load environment-specific .env files
+    const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
+    dotenv.config({ path: path.resolve(process.cwd(), envFile) });
+
+    // Fallback to default .env if environment-specific file doesn't exist
+    if (process.env.NODE_ENV && !require('fs').existsSync(envFile)) {
+        dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+    }
+
+    // Validate required variables (reference list above)
+    const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET', 'API_KEY'];
+    const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+    
+    if (missingVars.length > 0) {
+        console.error(`Missing required environment variables: ${missingVars.join(', ')}`);
+        console.error('Please check your .env file against .env.example');
+        process.exit(1);
+    }
+}
+
+// Configuration with environment variable priority
+const config = {
+    port: process.env.PORT || 3000,
+    dbUrl: process.env.DATABASE_URL,
+    apiKey: process.env.API_KEY,
+    logLevel: process.env.LOG_LEVEL || 'info',
+    maxRetries: parseInt(process.env.MAX_RETRIES) || 3
+};
+
+// Call early in application startup
+loadEnvironment();
+```
+
+```python
+# * Environment: Python loading with validation
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+def load_environment():
+    """Load environment variables with proper fallback and validation."""
+    # Load environment-specific .env file
+    env_name = os.getenv('ENVIRONMENT', 'development')
+    env_file = Path(f'.env.{env_name}')
+
+    if env_file.exists():
+        load_dotenv(env_file)
+    else:
+        load_dotenv('.env')
+
+    # Validate required variables (reference list above)
+    required_vars = ['DATABASE_URL', 'JWT_SECRET', 'API_KEY']
+    missing_vars = [var for var in required_vars if not os.getenv(var)]
+
+    if missing_vars:
+        raise EnvironmentError(
+            f"Missing required environment variables: {', '.join(missing_vars)}\n"
+            "Please check your .env file against .env.example"
+        )
+
+# Call early in application startup
+load_environment()
 ```
 
 ### CI/CD Pipeline Templates
@@ -1740,83 +1829,14 @@ fi
 
 ## Containerization & Environment Management
 
-### Environment Variables & Configuration
-
-**Environment Variable Priority:**
-Always favor environment variables over hardcoded configuration:
-
-```javascript
-// * Configuration: Environment variables take precedence over defaults
-const config = {
-    port: process.env.PORT || 3000,
-    dbUrl: process.env.DATABASE_URL || 'sqlite://./dev.db',
-    apiKey: process.env.API_KEY, // Required, no default
-    logLevel: process.env.LOG_LEVEL || 'info',
-    maxRetries: parseInt(process.env.MAX_RETRIES) || 3
-};
-
-// * Validation: Ensure required environment variables are set
-const requiredEnvVars = ['API_KEY', 'DATABASE_URL'];
-const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-if (missingVars.length > 0) {
-    console.error(`Missing required environment variables: ${missingVars.join(', ')}`);
-    process.exit(1);
-}
-```
-
-**Environment File Loading:**
-Ensure applications load `.env` files properly:
-
-```javascript
-// * Environment: Load .env file early in application startup
-import dotenv from 'dotenv';
-import path from 'path';
-
-// Load environment-specific .env files
-const envFile = process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : '.env';
-dotenv.config({ path: path.resolve(process.cwd(), envFile) });
-
-// Fallback to default .env if environment-specific file doesn't exist
-if (process.env.NODE_ENV && !require('fs').existsSync(envFile)) {
-    dotenv.config({ path: path.resolve(process.cwd(), '.env') });
-}
-```
-
-```python
-# * Environment: Python environment loading with validation
-import os
-from pathlib import Path
-from dotenv import load_dotenv
-
-def load_environment():
-    """Load environment variables with proper fallback and validation."""
-    # Load environment-specific .env file
-    env_name = os.getenv('ENVIRONMENT', 'development')
-    env_file = Path(f'.env.{env_name}')
-
-    if env_file.exists():
-        load_dotenv(env_file)
-    else:
-        # Fallback to default .env
-        load_dotenv('.env')
-
-    # Validate required variables
-    required_vars = ['DATABASE_URL', 'SECRET_KEY']
-    missing_vars = [var for var in required_vars if not os.getenv(var)]
-
-    if missing_vars:
-        raise EnvironmentError(f"Missing required environment variables: {', '.join(missing_vars)}")
-
-# Call early in application startup
-load_environment()
-```
+**Note**: All environment variable configuration is centralized in the "Environment Configuration" section above. Reference that section for templates, loading scripts, and validation patterns.
 
 ### Feature Flags & Configuration Management
 
 **Feature Flag Implementation:**
 
 ```javascript
-// * Feature Flags: Environment-driven feature toggles
+// * Feature Flags: Environment-driven feature toggles (use .env template above)
 class FeatureFlags {
     static isEnabled(featureName) {
         const envVar = `FEATURE_${featureName.toUpperCase()}`;
