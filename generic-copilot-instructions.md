@@ -2,10 +2,13 @@
 
 ## Environment Context
 
-- **Operating System**: [macOS/Linux]
-- **Default Shell**: [bash/zsh]
-- **Project Type**: [React/Vue/Angular + Node.js/Python/etc.]
-- **Build System**: [Vite/Webpack/etc.]
+- **Operating System**: [Update based on your platform]
+- **Default Shell**: [Update based on your preference]
+- **Project Type**: [Update based on your stack]
+- **Primary Language(s)**: [Update based on your project]
+- **Build System**: [Update based on your tools]
+- **Database**: [Update if applicable]
+- **Container Runtime**: [Update if using containers]
 
 ## Automation Guidelines
 
@@ -61,11 +64,11 @@ rm "$0"
 ### Use Platform-Appropriate Syntax
 
 ```bash
-# Correct - Platform-specific commands
+# Correct - Use platform-appropriate commands for your environment
 cd "/path/to/project"
-npm run dev
-source .venv/bin/activate  # Linux/macOS
-ls -la *.js               # Linux/macOS
+[your-start-command]  # npm run dev, python manage.py runserver, cargo run, etc.
+[your-env-activation] # source .venv/bin/activate, conda activate env, etc.
+[your-list-command]   # ls -la, find, etc.
 ```
 
 ## Repository Setup & Initialization
@@ -104,41 +107,16 @@ echo "✓ Directory structure created"
 
 # Generate .gitignore
 cat > .gitignore << 'EOF'
-# Dependencies
+# Dependencies (adapt for your package manager)
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-package-lock.json
-yarn.lock
-
-# Python
+vendor/
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-.venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-.cache
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Build outputs
-dist/
-build/
-*.egg-info/
-.next/
-out/
+*.pyc
 target/
+.cargo/
+.gradle/
+build/
+dist/
 
 # Environment variables
 .env
@@ -168,7 +146,7 @@ pids/
 *.seed
 *.pid.lock
 
-# Database
+# Database files (adapt for your database)
 *.sqlite
 *.sqlite3
 *.db
@@ -187,41 +165,44 @@ temp/
 ehthumbs.db
 Thumbs.db
 
-# Docker
-.dockerignore
-
 # Coverage reports
 coverage/
 .nyc_output/
+htmlcov/
+.coverage
 
-# Dependency directories
-jspm_packages/
+# Language-specific (uncomment/add as needed)
+# Node.js
+# npm-debug.log*
+# yarn-debug.log*
+# yarn-error.log*
+# package-lock.json
+# yarn.lock
 
-# Optional npm cache directory
-.npm
+# Python
+# .pytest_cache/
+# .mypy_cache/
+# .tox/
+# .venv/
+# venv/
+# env/
 
-# Optional REPL history
-.node_repl_history
+# Java
+# *.jar
+# *.war
+# *.ear
 
-# Output of 'npm pack'
-*.tgz
+# Rust
+# Cargo.lock (for applications)
 
-# Webpack bundles
-webpack-stats.json
+# Go
+# go.mod
+# go.sum
 
-# Visual Studio Code
-.vscode/
-*.code-workspace
-
-# JetBrains IDEs
-.idea/
-*.iml
-*.ipr
-*.iws
-
-# Sublime Text
-*.sublime-project
-*.sublime-workspace
+# C/C++
+# *.o
+# *.so
+# *.a
 
 # Archives
 *.zip
@@ -231,8 +212,6 @@ webpack-stats.json
 # Backup files
 *.bak
 *.backup
-*.swp
-*.swo
 *~
 
 # Security
@@ -341,8 +320,8 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 charset = utf-8
 
-# Indentation override for all JS, TS, CSS, HTML files
-[*.{js,ts,jsx,tsx,css,html,json,yml,yaml}]
+# Common web/config files (adjust for your project)
+[*.{js,ts,jsx,tsx,css,html,json,yml,yaml,xml}]
 indent_style = space
 indent_size = 2
 
@@ -351,6 +330,26 @@ indent_size = 2
 indent_style = space
 indent_size = 4
 max_line_length = 88
+
+# Go files
+[*.go]
+indent_style = tab
+indent_size = 4
+
+# Rust files
+[*.rs]
+indent_style = space
+indent_size = 4
+
+# Java files
+[*.java]
+indent_style = space
+indent_size = 4
+
+# C/C++ files
+[*.{c,cpp,h,hpp}]
+indent_style = space
+indent_size = 2
 
 # Markdown files
 [*.md]
@@ -377,411 +376,233 @@ rm "$0"
 
 ### Language-Specific Setup Scripts
 
-**Node.js/TypeScript Setup:**
+**Generic Setup Pattern:**
+
+```bash
+#!/bin/bash
+# * Setup: [LANGUAGE/FRAMEWORK] project configuration
+# ! Run after basic repository setup
+# ! Customize this template for your specific technology stack
+
+echo "� Setting up [LANGUAGE/FRAMEWORK] project..."
+
+# Initialize project structure if needed
+# Examples:
+# - npm init -y (Node.js)
+# - cargo init (Rust)
+# - go mod init [project-name] (Go)
+# - python -m venv .venv (Python)
+# - mvn archetype:generate (Java)
+
+# Install dependencies/tools
+# Examples:
+# - npm install --save-dev [packages] (Node.js)
+# - pip install -r requirements.txt (Python)
+# - cargo add [crates] (Rust)
+# - go get [packages] (Go)
+
+echo "✓ Dependencies installed"
+
+# Generate configuration files
+# Examples:
+# - tsconfig.json (TypeScript)
+# - pyproject.toml (Python)
+# - Cargo.toml (Rust)
+# - pom.xml (Java)
+
+echo "✓ Configuration files created"
+
+# Setup development tools
+# Examples:
+# - ESLint/Prettier (JavaScript/TypeScript)
+# - Black/isort (Python)
+# - rustfmt/clippy (Rust)
+# - gofmt/golint (Go)
+
+echo "✓ Development tools configured"
+
+# Setup testing framework
+# Examples:
+# - Jest (JavaScript/TypeScript)
+# - pytest (Python)
+# - cargo test (Rust)
+# - go test (Go)
+# - JUnit (Java)
+
+echo "✓ Testing framework setup"
+
+echo "✨ [LANGUAGE/FRAMEWORK] setup complete!"
+rm "$0"
+```
+
+**Example: Node.js/TypeScript Setup (customize as needed):**
 
 ```bash
 #!/bin/bash
 # * Setup: Node.js/TypeScript project configuration
-# ! Run after basic repository setup
 
 echo "🟢 Setting up Node.js/TypeScript project..."
 
-# Initialize package.json if it doesn't exist
 if [ ! -f "package.json" ]; then
     npm init -y
     echo "✓ package.json initialized"
 fi
 
-# Install development dependencies
-npm install --save-dev \
-    typescript \
-    @types/node \
-    eslint \
-    @eslint/js \
-    @typescript-eslint/parser \
-    @typescript-eslint/eslint-plugin \
-    prettier \
-    husky \
-    lint-staged \
-    jest \
-    @types/jest \
-    ts-jest \
-    @testing-library/jest-dom
+# Install your preferred development dependencies
+npm install --save-dev typescript @types/node eslint prettier
 
 echo "✓ Development dependencies installed"
 
-# Generate tsconfig.json
+# Generate basic tsconfig.json (customize for your needs)
 cat > tsconfig.json << 'EOF'
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
     "module": "ESNext",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "declaration": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "rootDir": "./src",
-    "removeComments": true,
-    "sourceMap": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "rootDir": "./src"
   },
-  "include": [
-    "src/**/*",
-    "tests/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "build"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
 EOF
 
-echo "✓ tsconfig.json created"
+echo "✓ TypeScript configuration created"
 
-# Generate ESLint configuration
-cat > .eslintrc.js << 'EOF'
-module.exports = {
-  env: {
-    browser: true,
-    es2022: true,
-    node: true,
-    jest: true,
-  },
-  extends: [
-    'eslint:recommended',
-    '@typescript-eslint/recommended',
-  ],
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: './tsconfig.json',
-  },
-  plugins: [
-    '@typescript-eslint',
-  ],
-  rules: {
-    '@typescript-eslint/no-unused-vars': 'error',
-    '@typescript-eslint/explicit-function-return-type': 'warn',
-    '@typescript-eslint/no-explicit-any': 'warn',
-    'prefer-const': 'error',
-    'no-var': 'error',
-  },
-  ignorePatterns: [
-    'dist/',
-    'build/',
-    'node_modules/',
-    '*.min.js',
-  ],
-};
-EOF
-
-echo "✓ .eslintrc.js created"
-
-# Generate Prettier configuration
-cat > .prettierrc << 'EOF'
+# Update package.json scripts (customize for your workflow)
+cat > package-scripts.json << 'EOF'
 {
-  "semi": true,
-  "trailingComma": "es5",
-  "singleQuote": true,
-  "printWidth": 100,
-  "tabWidth": 2,
-  "useTabs": false,
-  "bracketSpacing": true,
-  "arrowParens": "avoid",
-  "endOfLine": "lf"
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "lint": "eslint . --ext .js,.ts --fix",
+    "format": "prettier --write ."
+  }
 }
 EOF
 
-echo "✓ .prettierrc created"
-
-# Generate Jest configuration
-cat > jest.config.js << 'EOF'
-module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  testMatch: [
-    '**/tests/**/*.test.ts',
-    '**/src/**/*.test.ts'
-  ],
-  collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/**/*.test.ts'
-  ],
-  coverageDirectory: 'coverage',
-  coverageReporters: [
-    'text',
-    'lcov',
-    'html'
-  ],
-  transform: {
-    '^.+\\.tsx?$': 'ts-jest',
-  },
-  setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
-};
-EOF
-
-echo "✓ jest.config.js created"
-
-# Update package.json scripts
-npx json -I -f package.json -e '
-this.scripts = {
-  "build": "tsc",
-  "dev": "tsc --watch",
-  "test": "jest",
-  "test:watch": "jest --watch",
-  "test:coverage": "jest --coverage",
-  "lint": "eslint . --ext .js,.ts,.tsx --fix",
-  "lint:check": "eslint . --ext .js,.ts,.tsx",
-  "format": "prettier --write .",
-  "format:check": "prettier --check .",
-  "type-check": "tsc --noEmit",
-  "prepare": "husky install"
-}'
-
-echo "✓ package.json scripts updated"
-
-# Setup Husky and lint-staged
-npx husky install
-npx husky add .husky/pre-commit "npx lint-staged"
-
-# Generate lint-staged configuration
-cat > .lintstagedrc.json << 'EOF'
-{
-  "*.{js,ts,tsx}": [
-    "eslint --fix",
-    "prettier --write"
-  ],
-  "*.{json,css,md}": [
-    "prettier --write"
-  ]
-}
-EOF
-
-echo "✓ Git hooks configured"
+# Merge scripts into package.json (you may need to do this manually)
+echo "✓ Scripts template created (merge into package.json manually)"
 
 echo "✨ Node.js/TypeScript setup complete!"
 rm "$0"
 ```
 
-**Python Setup:**
+**Example: Python Setup (customize as needed):**
 
 ```bash
 #!/bin/bash
 # * Setup: Python project configuration
-# ! Run after basic repository setup
 
 echo "🐍 Setting up Python project..."
 
-# Create virtual environment
+# Create virtual environment (adapt for your Python version)
 python -m venv .venv
 echo "✓ Virtual environment created"
 
 # Activate virtual environment
-source .venv/bin/activate  # Linux/macOS
+source .venv/bin/activate
 
-# Create requirements files
-cat > requirements.txt << 'EOF'
-# Production dependencies
-# Add your main dependencies here
+# Create requirements template (customize for your project)
+if [ ! -f "requirements.txt" ]; then
+    cat > requirements.txt << 'EOF'
+# Add your project dependencies here
+# Examples: requests>=2.28.0, flask>=2.2.0, django>=4.0.0
 EOF
+fi
 
-cat > requirements-dev.txt << 'EOF'
-# Development dependencies
-black>=23.0.0
-isort>=5.12.0
-pylint>=2.17.0
-mypy>=1.5.0
-pytest>=7.4.0
-pytest-cov>=4.1.0
-pre-commit>=3.3.0
-bandit>=1.7.5
-safety>=2.3.0
-flake8>=6.0.0
-EOF
+# Install basic development tools (customize as needed)
+pip install --upgrade pip
+pip install black isort flake8 pytest pytest-cov
+echo "✓ Development tools installed"
 
-echo "✓ Requirements files created"
-
-# Install development dependencies
-pip install -r requirements-dev.txt
-echo "✓ Development dependencies installed"
-
-# Generate pyproject.toml
+# Create basic project configuration
 cat > pyproject.toml << 'EOF'
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "project-name"
+name = "your-project-name"
 version = "0.1.0"
-description = "Project description"
+description = "Your project description"
 authors = [{name = "Your Name", email = "your.email@example.com"}]
-license = {text = "MIT"}
-readme = "README.md"
 requires-python = ">=3.8"
-classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-]
 dependencies = []
-
-[project.optional-dependencies]
-dev = [
-    "black>=23.0.0",
-    "isort>=5.12.0",
-    "pylint>=2.17.0",
-    "mypy>=1.5.0",
-    "pytest>=7.4.0",
-    "pytest-cov>=4.1.0",
-    "pre-commit>=3.3.0",
-]
 
 [tool.black]
 line-length = 88
-target-version = ['py38']
-include = '\.pyi?$'
-
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-line_length = 88
-
-[tool.pylint.messages_control]
-disable = [
-    "too-few-public-methods",
-    "too-many-arguments",
-    "too-many-instance-attributes",
-]
-
-[tool.mypy]
-python_version = "3.8"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-python_files = ["test_*.py", "*_test.py"]
-addopts = "-v --tb=short --cov=src --cov-report=html --cov-report=term"
-
-[tool.coverage.run]
-source = ["src"]
-omit = ["tests/*", "*/tests/*"]
-
-[tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "def __repr__",
-    "raise AssertionError",
-    "raise NotImplementedError",
-]
+addopts = "-v --cov=src"
 EOF
-
-echo "✓ pyproject.toml created"
-
-# Generate pre-commit configuration
-cat > .pre-commit-config.yaml << 'EOF'
-repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
-    hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
-      - id: check-json
-      - id: check-toml
-      - id: check-merge-conflict
-      - id: debug-statements
-
-  - repo: https://github.com/psf/black
-    rev: 23.7.0
-    hooks:
-      - id: black
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
-    hooks:
-      - id: isort
-        args: ["--profile", "black"]
-
-  - repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
-    hooks:
-      - id: flake8
-        additional_dependencies: [flake8-docstrings]
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.5.1
-    hooks:
-      - id: mypy
-        additional_dependencies: [types-requests]
-
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.5
-    hooks:
-      - id: bandit
-        args: ["-c", ".bandit"]
-EOF
-
-echo "✓ .pre-commit-config.yaml created"
-
-# Install pre-commit hooks
-pre-commit install
-echo "✓ Pre-commit hooks installed"
 
 # Create basic project structure
-mkdir -p src tests docs
-touch src/__init__.py
-touch tests/__init__.py
-
-# Create basic test setup
-cat > tests/conftest.py << 'EOF'
-"""Test configuration and fixtures."""
-import pytest
-
-@pytest.fixture
-def sample_data():
-    """Sample test data."""
-    return {"test": "data"}
-EOF
-
-echo "✓ Project structure created"
+mkdir -p src tests
+touch src/__init__.py tests/__init__.py
 
 echo "✨ Python setup complete!"
+deactivate
 rm "$0"
 ```
 
 ### Container Configuration
 
-**Dockerfile Template:**
+**Generic Dockerfile Template:**
 
 ```dockerfile
 # * Container: Multi-stage Dockerfile template
-# * Usage: Customize stages and dependencies for your specific project
+# * Usage: Customize for your specific runtime, package manager, and dependencies
 
+# Development stage (customize base image for your stack)
+FROM [your-base-image] AS development
+WORKDIR /app
+COPY [your-dependency-files] ./
+RUN [your-install-command]  # npm ci, pip install, cargo build, etc.
+COPY . .
+EXPOSE [your-port]
+CMD ["[your-dev-command]"]  # npm run dev, python manage.py runserver, etc.
+
+# Build stage (if needed for compiled languages/assets)
+FROM [your-build-image] AS build
+WORKDIR /app
+COPY [your-dependency-files] ./
+RUN [your-install-command]
+COPY . .
+RUN [your-build-command]  # npm run build, cargo build --release, etc.
+
+# Production stage
+FROM [your-runtime-image] AS production
+WORKDIR /app
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -S appuser -u 1001 -G appgroup
+
+# Copy application (customize based on your build output)
+COPY --from=build --chown=appuser:appgroup /app/[build-output] ./
+RUN [any-production-setup-commands]
+
+# Health check (customize endpoint for your app)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD [your-health-check-command]
+
+# Security and startup
+USER appuser
+EXPOSE [your-port]
+CMD ["[your-start-command]"]
+```
+
+**Example: Node.js/JavaScript Dockerfile:**
+
+```dockerfile
 # Development stage
 FROM node:18-alpine AS development
 WORKDIR /app
@@ -791,8 +612,8 @@ COPY . .
 EXPOSE 3000
 CMD ["npm", "run", "dev"]
 
-# Build stage for frontend
-FROM node:18-alpine AS frontend-build
+# Build stage
+FROM node:18-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
@@ -802,59 +623,52 @@ RUN npm run build
 # Production stage
 FROM node:18-alpine AS production
 WORKDIR /app
-
-# Create non-root user
 RUN addgroup -g 1001 -S appgroup && \
     adduser -S appuser -u 1001 -G appgroup
-
-# Copy built application
-COPY --from=frontend-build --chown=appuser:appgroup /app/dist ./dist
-COPY --from=frontend-build --chown=appuser:appgroup /app/package*.json ./
+COPY --from=build --chown=appuser:appgroup /app/dist ./dist
+COPY --from=build --chown=appuser:appgroup /app/package*.json ./
 RUN npm ci --only=production && npm cache clean --force
-
-# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:3000/health || exit 1
-
-# Security
 USER appuser
 EXPOSE 3000
-
-# Start application
 CMD ["npm", "start"]
 ```
 
-**Docker Compose Template:**
+**Generic Docker Compose Template:**
 
 ```yaml
-# * Container: Docker Compose development environment
+# * Container: Generic Docker Compose template
 # * Environment: Uses variables from .env file (see Environment Configuration section above)
+# * Usage: Customize services, images, and dependencies for your specific stack
+
 version: '3.8'
 
 services:
   app:
     build:
       context: .
-      target: development
+      target: development  # or production
     ports:
-      - "${PORT:-3000}:3000"
+      - "${PORT:-3000}:3000"  # Customize port as needed
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=development  # Customize for your stack
       - DATABASE_URL=${DATABASE_URL}
     env_file:
       - .env
       - .env.local
     volumes:
       - .:/app
-      - /app/node_modules
+      - /app/node_modules  # Customize for your dependency directory
       - app_data:/app/data
     depends_on:
-      - database
+      - database  # Add/remove services as needed
       - redis
     restart: unless-stopped
 
+  # Database service (customize for your database)
   database:
-    image: postgres:15-alpine
+    image: postgres:15-alpine  # or mysql:8, mongo:6, etc.
     environment:
       - POSTGRES_DB=${DB_NAME:-app_db}
       - POSTGRES_USER=${DB_USER:-app_user}
@@ -866,6 +680,7 @@ services:
       - "${DB_PORT:-5432}:5432"
     restart: unless-stopped
 
+  # Cache service (optional, customize as needed)
   redis:
     image: redis:7-alpine
     command: redis-server --appendonly yes
@@ -875,6 +690,7 @@ services:
       - "${REDIS_PORT:-6379}:6379"
     restart: unless-stopped
 
+  # Reverse proxy (optional)
   nginx:
     image: nginx:alpine
     ports:
@@ -888,7 +704,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  postgres_data:
+  postgres_data:  # Customize volume names
   redis_data:
   app_data:
 
@@ -907,65 +723,89 @@ All environment variable handling should be consolidated in this section. Refere
 # .env.example - Copy to .env and fill in your values
 # ! Never commit real values to version control
 # ! Update this single template when adding new environment variables
+# ! Customize variables for your specific project stack
 
-# Application
-NODE_ENV=development
-PORT=3000
+# Application (customize for your framework)
+NODE_ENV=development          # or ENVIRONMENT, RAILS_ENV, etc.
+PORT=3000                     # Your application port
 APP_NAME=Your App Name
 APP_VERSION=1.0.0
 
-# Database
+# Database (customize for your database type)
 DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+# Alternative database configurations:
+# DATABASE_URL=mysql://user:password@localhost:3306/dbname
+# DATABASE_URL=mongodb://localhost:27017/dbname
+# DATABASE_URL=sqlite:///path/to/database.db
 DB_HOST=localhost
-DB_PORT=5432
+DB_PORT=5432                  # 3306 for MySQL, 27017 for MongoDB, etc.
 DB_NAME=app_db
 DB_USER=app_user
 DB_PASSWORD=your_secure_password
 
-# Redis
+# Cache/Session Store (optional, customize as needed)
 REDIS_URL=redis://localhost:6379
 REDIS_HOST=localhost
 REDIS_PORT=6379
 
-# Authentication
+# Authentication & Security
 JWT_SECRET=your_jwt_secret_key_here
 JWT_EXPIRES_IN=24h
 SESSION_SECRET=your_session_secret_here
+ENCRYPTION_KEY=your_encryption_key_here
 
-# External APIs
+# External APIs (customize for your integrations)
 API_KEY=your_api_key_here
 WEBHOOK_SECRET=your_webhook_secret
+THIRD_PARTY_API_URL=https://api.example.com
+THIRD_PARTY_API_KEY=your_third_party_key
 
-# Email
+# Email/Notifications (customize for your provider)
 SMTP_HOST=smtp.example.com
 SMTP_PORT=587
 SMTP_USER=your_email@example.com
 SMTP_PASSWORD=your_email_password
+# Alternative: EMAIL_SERVICE_API_KEY=your_service_key
 
-# Cloud Storage
+# Cloud Storage (customize for your provider)
+# AWS
 AWS_ACCESS_KEY_ID=your_aws_access_key
 AWS_SECRET_ACCESS_KEY=your_aws_secret_key
 AWS_BUCKET_NAME=your_bucket_name
 AWS_REGION=us-east-1
+# Google Cloud
+# GOOGLE_CLOUD_PROJECT_ID=your_project_id
+# GOOGLE_CLOUD_STORAGE_BUCKET=your_bucket_name
+# Azure
+# AZURE_STORAGE_ACCOUNT=your_account_name
+# AZURE_STORAGE_KEY=your_storage_key
 
-# Monitoring
+# Monitoring & Logging
 SENTRY_DSN=your_sentry_dsn
-LOG_LEVEL=info
+LOG_LEVEL=info                # debug, info, warn, error
+METRICS_ENDPOINT=http://localhost:9090
 
 # Feature Flags
 FEATURE_NEW_UI=false
 FEATURE_ADVANCED_SEARCH=true
+FEATURE_ANALYTICS=false
+
+# Development/Testing (customize as needed)
+DEBUG=false
+MOCK_EXTERNAL_APIS=false
+TEST_DATABASE_URL=sqlite:///:memory:
 ```
 
 **Required Environment Variables:**
-Maintain this list when adding new required variables:
+Maintain this list when adding new required variables (customize for your project):
 
 ```bash
-# Required variables (no defaults allowed)
+# Required variables (no defaults allowed) - customize for your project
 REQUIRED_ENV_VARS=(
-    "DATABASE_URL"
-    "JWT_SECRET" 
-    "API_KEY"
+    "DATABASE_URL"      # or your database connection string
+    "JWT_SECRET"        # or your auth secret key
+    "API_KEY"          # or your critical API key
+    # Add other critical variables your app cannot run without
 )
 ```
 
@@ -975,6 +815,7 @@ REQUIRED_ENV_VARS=(
 #!/bin/bash
 # * Environment: Universal environment loader script
 # Reference the REQUIRED_ENV_VARS list above when updating
+# Customize the required_vars array for your specific project
 
 load_environment() {
     local env_name=${1:-development}
@@ -991,7 +832,7 @@ load_environment() {
         echo "Warning: No environment file found"
     fi
 
-    # Validate required environment variables (reference list above)
+    # Validate required environment variables (customize this list)
     local required_vars=("DATABASE_URL" "JWT_SECRET" "API_KEY")
     local missing_vars=()
 
@@ -1016,6 +857,7 @@ load_environment "$1"
 
 ```javascript
 // * Environment: Node.js/JavaScript loading
+// Customize required variables and configuration for your project
 import dotenv from 'dotenv';
 import path from 'path';
 
@@ -1029,7 +871,7 @@ function loadEnvironment() {
         dotenv.config({ path: path.resolve(process.cwd(), '.env') });
     }
 
-    // Validate required variables (reference list above)
+    // Validate required variables (customize this list for your project)
     const requiredEnvVars = ['DATABASE_URL', 'JWT_SECRET', 'API_KEY'];
     const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
     
@@ -1040,13 +882,13 @@ function loadEnvironment() {
     }
 }
 
-// Configuration with environment variable priority
+// Configuration with environment variable priority (customize for your app)
 const config = {
     port: process.env.PORT || 3000,
     dbUrl: process.env.DATABASE_URL,
     apiKey: process.env.API_KEY,
     logLevel: process.env.LOG_LEVEL || 'info',
-    maxRetries: parseInt(process.env.MAX_RETRIES) || 3
+    // Add other configuration variables as needed
 };
 
 // Call early in application startup
@@ -1055,6 +897,7 @@ loadEnvironment();
 
 ```python
 # * Environment: Python loading with validation
+# Customize required variables and configuration for your project
 import os
 from pathlib import Path
 from dotenv import load_dotenv
@@ -1062,7 +905,7 @@ from dotenv import load_dotenv
 def load_environment():
     """Load environment variables with proper fallback and validation."""
     # Load environment-specific .env file
-    env_name = os.getenv('ENVIRONMENT', 'development')
+    env_name = os.getenv('ENVIRONMENT', 'development')  # or DJANGO_ENV, FLASK_ENV, etc.
     env_file = Path(f'.env.{env_name}')
 
     if env_file.exists():
@@ -1070,7 +913,7 @@ def load_environment():
     else:
         load_dotenv('.env')
 
-    # Validate required variables (reference list above)
+    # Validate required variables (customize this list for your project)
     required_vars = ['DATABASE_URL', 'JWT_SECRET', 'API_KEY']
     missing_vars = [var for var in required_vars if not os.getenv(var)]
 
