@@ -195,8 +195,6 @@ htmlcov/
 # Cargo.lock (for applications)
 
 # Go
-# go.mod
-# go.sum
 
 # C/C++
 # *.o
