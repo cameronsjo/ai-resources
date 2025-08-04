@@ -2,8 +2,8 @@
 
 ## Environment Context
 
-- **Operating System**: [Windows/macOS/Linux]
-- **Default Shell**: [PowerShell/bash/zsh]
+- **Operating System**: [macOS/Linux]
+- **Default Shell**: [bash/zsh]
 - **Project Type**: [React/Vue/Angular + Node.js/Python/etc.]
 - **Build System**: [Vite/Webpack/etc.]
 
@@ -65,9 +65,7 @@ rm "$0"
 cd "/path/to/project"
 npm run dev
 source .venv/bin/activate  # Linux/macOS
-# .\.venv\Scripts\activate  # Windows
 ls -la *.js               # Linux/macOS
-# Get-ChildItem *.js       # Windows PowerShell
 ```
 
 ## Repository Setup & Initialization
@@ -362,10 +360,6 @@ max_line_length = 80
 # Makefiles
 [Makefile]
 indent_style = tab
-
-# Windows files
-[*.{cmd,bat,ps1}]
-end_of_line = crlf
 EOF
 
 echo "✓ .editorconfig created"
@@ -601,7 +595,6 @@ echo "✓ Virtual environment created"
 
 # Activate virtual environment
 source .venv/bin/activate  # Linux/macOS
-# .\.venv\Scripts\activate  # Windows
 
 # Create requirements files
 cat > requirements.txt << 'EOF'
@@ -1448,7 +1441,6 @@ git config --global alias.visual '!gitk'
 
 # Set up proper line endings for cross-platform work
 git config --global core.autocrlf input  # Linux/Mac
-git config --global core.autocrlf true   # Windows
 
 # Set up GPG signing for commits (security best practice)
 git config --global commit.gpgsign true
@@ -2002,31 +1994,6 @@ detect_container_runtime() {
 
 # Usage in scripts
 CONTAINER_RUNTIME=$(detect_container_runtime)
-```
-
-```powershell
-# * Container: PowerShell container runtime detection
-function Get-ContainerRuntime {
-    $runtimes = @('podman', 'rancher', 'docker')
-
-    foreach ($runtime in $runtimes) {
-        try {
-            $null = & $runtime --version 2>$null
-            if ($LASTEXITCODE -eq 0) {
-                Write-Host "Detected container runtime: $runtime" -ForegroundColor Green
-                return $runtime
-            }
-        }
-        catch {
-            continue
-        }
-    }
-
-    throw "No container runtime found. Please install podman, rancher, or docker."
-}
-
-# Usage
-$containerRuntime = Get-ContainerRuntime
 ```
 
 ### Docker & Container Best Practices
@@ -3059,54 +3026,6 @@ fi
 echo "🎉 All quality checks passed!"
 ```
 
-```powershell
-# * Quality: PowerShell quality check script for Windows
-param(
-    [switch]$Fix,
-    [switch]$SkipTests
-)
-
-Write-Host "🔍 Running comprehensive quality checks..." -ForegroundColor Cyan
-
-# JavaScript/TypeScript checks
-if (Test-Path "package.json") {
-    Write-Host "📋 Checking JavaScript/TypeScript..." -ForegroundColor Yellow
-
-    if ($Fix) {
-        npm run lint
-        npm run format
-    } else {
-        npm run lint:check
-        npm run format:check
-    }
-
-    npm run type-check
-    npm run security:audit
-    Write-Host "✅ JavaScript/TypeScript checks passed" -ForegroundColor Green
-}
-
-# Python checks
-if ((Test-Path "requirements.txt") -or (Test-Path "pyproject.toml")) {
-    Write-Host "🐍 Checking Python..." -ForegroundColor Yellow
-
-    if ($Fix) {
-        black .
-        isort --profile black .
-    } else {
-        black --check .
-        isort --check-only --profile black .
-    }
-
-    pylint --rcfile=pyproject.toml src/
-    mypy src/
-    bandit -r src/
-    safety check
-    Write-Host "✅ Python checks passed" -ForegroundColor Green
-}
-
-Write-Host "🎉 All quality checks passed!" -ForegroundColor Green
-```
-
 ## Adaptive Learning & Evolution
 
 ### Self-Improving Instructions
@@ -3152,7 +3071,7 @@ This creates a "living document" that evolves based on actual development experi
 **To customize this template for your project:**
 
 1. **Environment Context**: Update OS, shell, project type, and build system
-2. **Command Guidelines**: Adjust for your platform (Windows PowerShell vs Linux bash)
+2. **Command Guidelines**: Adjust for your platform (Linux bash/zsh vs macOS)
 3. **Database Operations**: Customize database paths and safety procedures
 4. **File Organization**: Add project-specific file structure guidelines
 5. **Development Patterns**: Include project-specific architectural patterns
