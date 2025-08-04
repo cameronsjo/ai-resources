@@ -97,7 +97,6 @@ else
 fi
 
 # Create essential directories
-mkdir -p .github/workflows
 mkdir -p .github/ISSUE_TEMPLATE
 mkdir -p .github/PULL_REQUEST_TEMPLATE
 mkdir -p docs
@@ -367,8 +366,7 @@ echo "✨ Repository setup complete!"
 echo "Next steps:"
 echo "1. Run language-specific setup: ./setup-{language}.sh"
 echo "2. Configure your IDE/editor"
-echo "3. Set up CI/CD pipelines"
-echo "4. Create your first commit"
+echo "3. Create your first commit"
 
 # Self-destruct
 rm "$0"
@@ -927,115 +925,6 @@ def load_environment():
 load_environment()
 ```
 
-### CI/CD Pipeline Templates
-
-**GitHub Actions Workflow:**
-
-```yaml
-# .github/workflows/ci.yml
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [16.x, 18.x, 20.x]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run linting
-        run: npm run lint:check
-
-      - name: Run type checking
-        run: npm run type-check
-
-      - name: Run tests
-        run: npm run test:coverage
-
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
-
-  build:
-    needs: test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build application
-        run: npm run build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-files
-          path: dist/
-
-  security:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run security audit
-        run: npm audit --audit-level=moderate
-
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-
-  deploy:
-    if: github.ref == 'refs/heads/main'
-    needs: [test, build, security]
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Deploy to staging
-        run: echo "Deploy to staging environment"
-
-      - name: Run integration tests
-        run: echo "Run integration tests"
-
-      - name: Deploy to production
-        if: success()
-        run: echo "Deploy to production environment"
-```
-
 ### Template Cleanup Instructions
 
 **⚠️ IMPORTANT: Remove these setup instructions after completing initial repository configuration**
@@ -1051,7 +940,6 @@ After successfully setting up your repository with the above scripts and configu
 - [ ] Replace placeholder values in configuration files
 - [ ] Remove unused language configurations (keep only what you need)
 - [ ] Update Docker configurations for your specific stack
-- [ ] Customize CI/CD workflows for your deployment process
 - [ ] Remove this "Repository Setup & Initialization" section entirely
 - [ ] Remove "Template Cleanup Instructions" section
 - [ ] Commit cleaned-up configuration: `git add .; git commit -m "chore: finalize repository setup"`
@@ -1060,7 +948,6 @@ After successfully setting up your repository with the above scripts and configu
 
 - Review and update dependencies monthly
 - Update security configurations quarterly
-- Review and update CI/CD pipelines as needed
 - Archive or remove obsolete configuration files
 - Update documentation to reflect current project state
 
@@ -2449,67 +2336,6 @@ npm install --save-dev \
 pip install safety bandit semgrep
 ```
 
-**Security Configuration (.github/workflows/security.yml):**
-
-```yaml
-# * Security: Automated security scanning workflow
-name: Security Scanning
-
-on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
-
-jobs:
-  security:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run ESLint Security
-        run: npx eslint . --ext .js,.ts,.tsx --format=compact
-
-      - name: Run npm audit
-        run: npm audit --audit-level=moderate
-
-      - name: Run Security Audit
-        run: npx audit-ci --moderate
-
-      # Python security scanning
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-
-      - name: Install Python security tools
-        run: |
-          pip install safety bandit
-
-      - name: Run Bandit security scan
-        run: bandit -r . -f json -o bandit-report.json || true
-
-      - name: Run Safety check
-        run: safety check --json --output safety-report.json || true
-
-      - name: Upload security reports
-        uses: actions/upload-artifact@v3
-        with:
-          name: security-reports
-          path: |
-            bandit-report.json
-            safety-report.json
-```
-
 **Bandit Configuration (.bandit):**
 
 ```yaml
@@ -2726,96 +2552,6 @@ default_language_version:
     "ms-vsliveshare.vsliveshare"
   ]
 }
-```
-
-### Automated Quality Gates
-
-**GitHub Actions Quality Pipeline (.github/workflows/quality.yml):**
-
-```yaml
-# * Quality: Comprehensive code quality pipeline
-name: Code Quality
-
-on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main]
-
-jobs:
-  quality:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: Install dependencies
-        run: |
-          npm ci
-          pip install -r requirements-dev.txt
-
-      # JavaScript/TypeScript Quality Checks
-      - name: ESLint Check
-        run: npm run lint:check
-
-      - name: Prettier Check
-        run: npm run format:check
-
-      - name: TypeScript Check
-        run: npm run type-check
-
-      - name: Security Audit
-        run: npm run security:audit
-
-      # Python Quality Checks
-      - name: Black Check
-        run: black --check .
-
-      - name: isort Check
-        run: isort --check-only --profile black .
-
-      - name: Pylint Check
-        run: pylint --rcfile=pyproject.toml src/
-
-      - name: MyPy Check
-        run: mypy src/
-
-      - name: Bandit Security Check
-        run: bandit -r src/ -f json
-
-      - name: Safety Check
-        run: safety check
-
-      # Generate quality reports
-      - name: Generate ESLint Report
-        run: npx eslint . --ext .js,.ts,.tsx --format=json --output-file=eslint-report.json || true
-
-      - name: Generate Coverage Report
-        run: npm run test:coverage || true
-
-      - name: Upload Quality Reports
-        uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: quality-reports
-          path: |
-            eslint-report.json
-            coverage/
-            bandit-report.json
-            safety-report.json
 ```
 
 ### Quality Metrics & Monitoring
