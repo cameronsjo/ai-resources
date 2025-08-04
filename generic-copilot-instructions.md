@@ -192,7 +192,9 @@ htmlcov/
 # *.ear
 
 # Rust
-# Cargo.lock (for applications)
+# Cargo.lock (commit this file for applications; ignore it for libraries)
+# If this is a library, uncomment the next line to ignore Cargo.lock:
+# Cargo.lock
 
 # Go
 
